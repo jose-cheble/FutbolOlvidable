@@ -85,6 +85,36 @@
   color: var(--text-muted);
 }
 
+.linked {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-top: 0.2rem;
+}
+
+.unlinked {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+  opacity: 0.8;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
 .player-actions {
   display: flex;
   flex-direction: column;
@@ -100,4 +130,9 @@
   text-align: center;
   padding: 2rem;
   color: var(--text-muted);
+}
+
+.banner-error {
+  color: var(--danger);
+  margin-bottom: 1rem;
 }

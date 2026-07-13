@@ -28,11 +28,12 @@ export class UploadService implements OnModuleInit {
   async onModuleInit() {
     await fs.mkdir(path.join(this.uploadPath, 'groups'), { recursive: true });
     await fs.mkdir(path.join(this.uploadPath, 'players'), { recursive: true });
+    await fs.mkdir(path.join(this.uploadPath, 'users'), { recursive: true });
   }
 
   async saveImage(
     file: Express.Multer.File,
-    folder: 'groups' | 'players',
+    folder: 'groups' | 'players' | 'users',
   ): Promise<string> {
     if (!file) {
       throw new BadRequestException('Archivo requerido');

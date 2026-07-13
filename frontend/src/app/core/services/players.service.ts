@@ -24,7 +24,7 @@ export class PlayersService {
 
   create(
     groupId: string,
-    data: { name: string; defaultPosition: DefaultPosition; photoUrl?: string; userId?: string },
+    data: { name: string; defaultPosition: DefaultPosition; userId?: string },
   ): Observable<Player> {
     return this.http.post<Player>(`${environment.apiUrl}/groups/${groupId}/players`, data);
   }
@@ -32,7 +32,7 @@ export class PlayersService {
   update(
     groupId: string,
     playerId: string,
-    data: Partial<{ name: string; defaultPosition: DefaultPosition; photoUrl: string | null; userId: string | null }>,
+    data: Partial<{ name: string; defaultPosition: DefaultPosition; userId: string | null }>,
   ): Observable<Player> {
     return this.http.put<Player>(
       `${environment.apiUrl}/groups/${groupId}/players/${playerId}`,

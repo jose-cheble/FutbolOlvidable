@@ -5,6 +5,7 @@ import {
   IsUUID,
   MinLength,
   MaxLength,
+  ValidateIf,
 } from 'class-validator';
 import { DefaultPosition } from '../../common/enums';
 
@@ -41,7 +42,9 @@ export class UpdatePlayerDto {
   @IsString()
   photoUrl?: string | null;
 
+  /** null = desvincular; string UUID = vincular */
   @IsOptional()
+  @ValidateIf((_, v) => v !== null && v !== undefined)
   @IsUUID()
   userId?: string | null;
 }

@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Player } from '../entities/player.entity';
 import { Group } from '../entities/group.entity';
+import { User } from '../entities/user.entity';
 import { Vote } from '../entities/vote.entity';
 import { MvpVote } from '../entities/mvp-vote.entity';
 import { MatchLineup } from '../entities/match-lineup.entity';
@@ -21,6 +22,8 @@ export class PlayersService {
     private readonly playersRepo: Repository<Player>,
     @InjectRepository(Group)
     private readonly groupsRepo: Repository<Group>,
+    @InjectRepository(User)
+    private readonly usersRepo: Repository<User>,
     @InjectRepository(Vote)
     private readonly votesRepo: Repository<Vote>,
     @InjectRepository(MvpVote)
@@ -28,6 +31,26 @@ export class PlayersService {
     @InjectRepository(MatchLineup)
     private readonly lineupsRepo: Repository<MatchLineup>,
   ) {}
+
+  private toDto(player: Player) {
+    return {
+      id: player.id,
+      groupId: player.groupId,
+      name: player.name,
+      defaultPosition: player.defaultPosition,
+      userId: player.userId,
+      // Foto solo del usuario vinculado (no hay foto propia del jugador)
+      photoUrl: player.user?.photoUrl ?? null,
+      createdAt: player.createdAt,
+      updatedAt: player.updatedAt,
+    };
+  }
+
+  private async resolveUserPhoto(userId: string | null | undefined) {
+    if (!userId) return null;
+    const user = await this.usersRepo.findOne({ where: { id: userId } });
+    return user?.photoUrl ?? null;
+  }
 
   async create(groupId: string, dto: CreatePlayerDto) {
     const group = await this.groupsRepo.findOne({ where: { id: groupId } });
@@ -51,34 +74,43 @@ export class PlayersService {
       }
     }
 
+    const photoUrl = await this.resolveUserPhoto(dto.userId);
+
     const player = this.playersRepo.create({
       groupId,
       name: dto.name,
       defaultPosition: dto.defaultPosition,
-      photoUrl: dto.photoUrl ?? null,
+      photoUrl,
       userId: dto.userId ?? null,
     });
     await this.playersRepo.save(player);
-    return player;
+    return this.findOne(groupId, player.id);
   }
 
   async findAll(groupId: string) {
-    return this.playersRepo.find({
+    const players = await this.playersRepo.find({
       where: { groupId },
+      relations: { user: true },
       order: { name: 'ASC' },
     });
+    return players.map((p) => this.toDto(p));
   }
 
   async findOne(groupId: string, playerId: string) {
     const player = await this.playersRepo.findOne({
       where: { id: playerId, groupId },
+      relations: { user: true },
     });
     if (!player) throw new NotFoundException('Jugador no encontrado');
-    return player;
+    return this.toDto(player);
   }
 
   async update(groupId: string, playerId: string, dto: UpdatePlayerDto) {
-    const player = await this.findOne(groupId, playerId);
+    const player = await this.playersRepo.findOne({
+      where: { id: playerId, groupId },
+      relations: { user: true },
+    });
+    if (!player) throw new NotFoundException('Jugador no encontrado');
 
     if (dto.userId !== undefined && dto.userId !== null) {
       const linked = await this.playersRepo.findOne({
@@ -94,16 +126,30 @@ export class PlayersService {
     if (dto.name !== undefined) player.name = dto.name;
     if (dto.defaultPosition !== undefined)
       player.defaultPosition = dto.defaultPosition;
-    if (dto.photoUrl !== undefined) player.photoUrl = dto.photoUrl;
-    if (dto.userId !== undefined) player.userId = dto.userId;
 
+    if (dto.userId !== undefined) {
+      player.userId = dto.userId;
+      // Al vincular/desvincular, la foto viene del usuario (o null)
+      player.photoUrl = await this.resolveUserPhoto(dto.userId);
+    }
+
+    // Ignorar photoUrl del DTO: la foto no es del jugador
     await this.playersRepo.save(player);
-    return player;
+    return this.findOne(groupId, playerId);
   }
 
   async remove(groupId: string, playerId: string) {
-    const player = await this.findOne(groupId, playerId);
-    await this.playersRepo.remove(player);
+    const player = await this.playersRepo.findOne({
+      where: { id: playerId, groupId },
+    });
+    if (!player) throw new NotFoundException('Jugador no encontrado');
+
+    // Borrar dependencias explícitas por si el FK no está en CASCADE aún
+    await this.lineupsRepo.delete({ playerId });
+    await this.votesRepo.delete({ votedPlayerId: playerId });
+    await this.mvpVotesRepo.delete({ mvpPlayerId: playerId });
+    await this.playersRepo.delete({ id: playerId, groupId });
+
     return { deleted: true };
   }
 

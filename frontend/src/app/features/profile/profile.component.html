@@ -1,0 +1,57 @@
+<div class="page fade-in">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Mi perfil</h1>
+      <p class="page-subtitle">Tu foto se usa en todos los grupos donde estés vinculado como jugador</p>
+    </div>
+  </header>
+
+  @if (user) {
+    <div class="card profile-card">
+      <div class="avatar-block">
+        @if (previewUrl) {
+          <img [src]="previewUrl" alt="" class="avatar" />
+        } @else {
+          <div class="avatar placeholder">{{ user.displayName.charAt(0) }}</div>
+        }
+        <div class="avatar-actions">
+          <label class="btn-secondary btn-sm">
+            {{ uploading ? 'Subiendo…' : 'Cambiar foto' }}
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onFileSelected($event)"
+              [disabled]="uploading"
+            />
+          </label>
+          @if (previewUrl) {
+            <button type="button" class="btn-ghost btn-sm" (click)="removePhoto()">Quitar</button>
+          }
+        </div>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <label>
+          Nombre
+          <input type="text" formControlName="displayName" />
+        </label>
+        <label>
+          Email
+          <input type="email" [value]="user.email" disabled />
+        </label>
+
+        @if (error) {
+          <p class="error">{{ error }}</p>
+        }
+        @if (success) {
+          <p class="success">{{ success }}</p>
+        }
+
+        <button type="submit" class="btn-primary" [disabled]="saving || form.invalid">
+          {{ saving ? 'Guardando…' : 'Guardar' }}
+        </button>
+      </form>
+    </div>
+  }
+</div>

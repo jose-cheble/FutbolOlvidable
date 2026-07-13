@@ -2,9 +2,15 @@
   margin-bottom: 1.5rem;
 
   h2 {
-    margin: 0 0 1rem;
+    margin: 0 0 0.5rem;
     font-size: 1.1rem;
   }
+}
+
+.form-intro {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
 .form-grid {
@@ -36,18 +42,14 @@ select {
   font-family: var(--font-body);
 }
 
-.photo-upload {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.link-label {
   margin-bottom: 1rem;
-}
 
-.preview {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
+  .hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.85;
+  }
 }
 
 .form-actions {

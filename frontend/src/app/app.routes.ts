@@ -11,10 +11,13 @@ import { FieldCanvasComponent } from './features/matches/field-canvas/field-canv
 import { VoteComponent } from './features/matches/vote/vote.component';
 import { RankingsComponent } from './features/rankings/rankings.component';
 
+import { ProfileComponent } from './features/profile/profile.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'groups', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'groups', component: GroupsListComponent, canActivate: [authGuard] },
   { path: 'groups/:id', component: GroupDetailComponent, canActivate: [authGuard] },
   { path: 'groups/:id/players', component: PlayersListComponent, canActivate: [authGuard] },

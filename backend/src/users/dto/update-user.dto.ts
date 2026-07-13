@@ -6,4 +6,8 @@ export class UpdateUserDto {
   @MinLength(2)
   @MaxLength(80)
   displayName?: string;
+
+  @IsOptional()
+  @IsString()
+  photoUrl?: string | null;
 }

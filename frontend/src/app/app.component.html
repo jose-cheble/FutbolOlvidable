@@ -5,7 +5,12 @@
       <a routerLink="/groups" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Mis Grupos</a>
     </nav>
     <div class="nav-user">
-      <span class="user-name">{{ user.displayName }}</span>
+      <a routerLink="/profile" routerLinkActive="active" class="user-link">
+        @if (user.photoUrl) {
+          <img [src]="user.photoUrl" alt="" class="nav-avatar" />
+        }
+        <span class="user-name">{{ user.displayName }}</span>
+      </a>
       <button type="button" class="btn-ghost btn-sm" (click)="logout()">Salir</button>
     </div>
   </header>

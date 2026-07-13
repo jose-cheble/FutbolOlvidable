@@ -29,7 +29,8 @@ export class UploadController {
     @Query('type') type: string = 'players',
   ) {
     if (!file) throw new BadRequestException('Archivo requerido');
-    const folder = type === 'groups' ? 'groups' : 'players';
+    const folder =
+      type === 'groups' ? 'groups' : type === 'users' ? 'users' : 'players';
     const url = await this.uploadService.saveImage(file, folder);
     return { url };
   }

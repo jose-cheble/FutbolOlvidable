@@ -8,7 +8,10 @@
   </nav>
 
   <header class="page-header">
-    <h1 class="page-title">Jugadores</h1>
+    <div>
+      <h1 class="page-title">Jugadores</h1>
+      <p class="page-subtitle">Apodo en la cancha + vínculo con cuenta del grupo</p>
+    </div>
     <button type="button" class="btn-primary" (click)="openCreate()">+ Agregar</button>
   </header>
 
@@ -22,15 +25,20 @@
     <app-player-form
       [groupId]="groupId"
       [player]="editingPlayer"
+      [availableMembers]="availableMembers"
       (saved)="onSaved()"
       (cancelled)="closeForm()"
     />
   }
 
+  @if (deleteError) {
+    <p class="error banner-error">{{ deleteError }}</p>
+  }
+
   @if (loading) {
     <p class="loading">Cargando…</p>
   } @else if (!players.length) {
-    <div class="card empty">No hay jugadores. Agregá el primero.</div>
+    <div class="card empty">No hay jugadores. Agregá el primero y vinculalo a un miembro si querés.</div>
   } @else {
     <div class="players-grid">
       @for (player of players; track player.id) {
@@ -43,6 +51,11 @@
           <div class="player-info">
             <a [routerLink]="['/groups', groupId, 'players', player.id]" class="player-name">{{ player.name }}</a>
             <span class="position">{{ positionLabel(player.defaultPosition) }}</span>
+            @if (memberLabel(player.userId); as linked) {
+              <span class="linked">Cuenta: {{ linked }}</span>
+            } @else {
+              <span class="unlinked">Sin vincular</span>
+            }
           </div>
           <div class="player-actions">
             <button type="button" class="btn-ghost btn-sm" (click)="openEdit(player)">Editar</button>

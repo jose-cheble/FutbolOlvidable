@@ -1,0 +1,79 @@
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.profile-card {
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.avatar-block {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+
+  &.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-family: var(--font-brand);
+    font-size: 2rem;
+  }
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+input {
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-input);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.success {
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin: 0;
+}

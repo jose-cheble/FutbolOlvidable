@@ -26,6 +26,9 @@ export class User {
   @Column({ name: 'display_name' })
   displayName: string;
 
+  @Column({ name: 'photo_url', type: 'varchar', nullable: true })
+  photoUrl: string | null;
+
   @Column({
     name: 'auth_provider',
     type: 'enum',

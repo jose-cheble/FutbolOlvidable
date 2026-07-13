@@ -4,10 +4,40 @@
       <h1 class="page-title">Mis Grupos</h1>
       <p class="page-subtitle">Tus partidos, tus votos, tu historial</p>
     </div>
-    <button type="button" class="btn-primary" (click)="toggleCreate()">
-      {{ showCreate ? 'Cancelar' : '+ Nuevo grupo' }}
-    </button>
+    <div class="header-actions">
+      <button type="button" class="btn-secondary" (click)="toggleJoin()">
+        {{ showJoin ? 'Cancelar' : 'Cargar grupo' }}
+      </button>
+      <button type="button" class="btn-primary" (click)="toggleCreate()">
+        {{ showCreate ? 'Cancelar' : '+ Nuevo grupo' }}
+      </button>
+    </div>
   </header>
+
+  @if (showJoin) {
+    <div class="card create-form">
+      <h2>Cargar grupo</h2>
+      <p class="form-hint">Pegá el ID que te compartieron para unirte.</p>
+      <form [formGroup]="joinForm" (ngSubmit)="joinGroup()">
+        <label class="full-label">
+          ID del grupo
+          <input
+            type="text"
+            formControlName="groupId"
+            placeholder="ej. 3fa85f64-5717-4562-b3fc-2c963f66afa6"
+            autocomplete="off"
+          />
+        </label>
+        @if (joinError) {
+          <p class="error">{{ joinError }}</p>
+        }
+        @if (joinSuccess) {
+          <p class="success">{{ joinSuccess }}</p>
+        }
+        <button type="submit" class="btn-primary" [disabled]="joinForm.invalid">Unirme</button>
+      </form>
+    </div>
+  }
 
   @if (showCreate) {
     <div class="card create-form">
@@ -28,6 +58,20 @@
         }
         <button type="submit" class="btn-primary" [disabled]="createForm.invalid">Crear</button>
       </form>
+
+      @if (createdGroupId) {
+        <div class="share-box">
+          <p class="share-title">Grupo “{{ createdGroupName }}” creado</p>
+          <p class="form-hint">Compartí este ID para que el resto se una:</p>
+          <div class="share-id-row">
+            <code class="share-id">{{ createdGroupId }}</code>
+            <button type="button" class="btn-secondary btn-sm" (click)="copyId(createdGroupId!)">
+              {{ copied ? 'Copiado' : 'Copiar' }}
+            </button>
+          </div>
+          <a [routerLink]="['/groups', createdGroupId]" class="btn-primary btn-sm">Ir al grupo</a>
+        </div>
+      }
     </div>
   }
 
@@ -35,7 +79,7 @@
     <p class="loading">Cargando grupos…</p>
   } @else if (!groups.length) {
     <div class="empty-state card">
-      <p>Todavía no tenés grupos. Creá uno para empezar.</p>
+      <p>Todavía no tenés grupos. Creá uno o cargá un ID compartido.</p>
     </div>
   } @else {
     <div class="groups-grid">

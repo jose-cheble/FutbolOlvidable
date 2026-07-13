@@ -12,11 +12,18 @@
       @if (photoUrl(group.photoUrl); as src) {
         <img [src]="src" alt="" class="group-photo" />
       } @else {
-        <div class="group-photo placeholder">⚽</div>
+        <div class="group-photo placeholder" aria-hidden="true">FO</div>
       }
-      <div>
+      <div class="group-header__text">
         <h1>{{ group.name }}</h1>
         <p class="meta">{{ group.playerCount }} / {{ group.maxPlayers }} jugadores · {{ group.members.length }} miembros</p>
+        <div class="share-id-row">
+          <span class="share-label">ID para compartir</span>
+          <code class="share-id">{{ group.id }}</code>
+          <button type="button" class="btn-secondary btn-sm" (click)="copyId()">
+            {{ copied ? 'Copiado' : 'Copiar' }}
+          </button>
+        </div>
       </div>
     </header>
 

@@ -1,9 +1,16 @@
-import { Component, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PlayersService } from '../../../core/services/players.service';
-import { UploadService } from '../../../core/services/upload.service';
-import { DefaultPosition, Player } from '../../../core/models';
+import { DefaultPosition, GroupMember, Player } from '../../../core/models';
 
 @Component({
   selector: 'app-player-form',
@@ -15,60 +22,41 @@ import { DefaultPosition, Player } from '../../../core/models';
 export class PlayerFormComponent implements OnChanges {
   @Input({ required: true }) groupId!: string;
   @Input() player: Player | null = null;
+  @Input() availableMembers: GroupMember[] = [];
   @Output() saved = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
 
   private readonly fb = inject(FormBuilder);
   private readonly playersService = inject(PlayersService);
-  private readonly uploadService = inject(UploadService);
 
   positions = Object.values(DefaultPosition);
   error = '';
   loading = false;
-  uploading = false;
-  previewUrl: string | null = null;
 
   form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     defaultPosition: [DefaultPosition.MEDIO_CAMPO, Validators.required],
-    photoUrl: [''],
+    userId: [''],
   });
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    // Solo rehidratar el form cuando cambia el jugador (no cuando se refresca availableMembers)
+    if (!changes['player']) return;
+
     if (this.player) {
       this.form.patchValue({
         name: this.player.name,
         defaultPosition: this.player.defaultPosition,
-        photoUrl: this.player.photoUrl || '',
+        userId: this.player.userId || '',
       });
-      this.previewUrl = this.uploadService.resolveUrl(this.player.photoUrl);
     } else {
       this.form.reset({
         name: '',
         defaultPosition: DefaultPosition.MEDIO_CAMPO,
-        photoUrl: '',
+        userId: '',
       });
-      this.previewUrl = null;
     }
     this.error = '';
-  }
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    this.uploading = true;
-    this.uploadService.upload(file, 'players').subscribe({
-      next: (res) => {
-        this.form.patchValue({ photoUrl: res.url });
-        this.previewUrl = this.uploadService.resolveUrl(res.url);
-        this.uploading = false;
-      },
-      error: () => {
-        this.error = 'Error al subir imagen';
-        this.uploading = false;
-      },
-    });
   }
 
   submit(): void {
@@ -76,15 +64,19 @@ export class PlayerFormComponent implements OnChanges {
     this.loading = true;
     this.error = '';
     const data = this.form.getRawValue();
-    const payload = {
-      name: data.name,
-      defaultPosition: data.defaultPosition,
-      photoUrl: data.photoUrl || undefined,
-    };
+    const userId = (data.userId || '').trim() || null;
 
     const req = this.player
-      ? this.playersService.update(this.groupId, this.player.id, payload)
-      : this.playersService.create(this.groupId, payload);
+      ? this.playersService.update(this.groupId, this.player.id, {
+          name: data.name,
+          defaultPosition: data.defaultPosition,
+          userId,
+        })
+      : this.playersService.create(this.groupId, {
+          name: data.name,
+          defaultPosition: data.defaultPosition,
+          userId: userId || undefined,
+        });
 
     req.subscribe({
       next: () => {
@@ -92,7 +84,8 @@ export class PlayerFormComponent implements OnChanges {
         this.saved.emit();
       },
       error: (err) => {
-        this.error = err.error?.message || 'Error al guardar';
+        const msg = err.error?.message;
+        this.error = Array.isArray(msg) ? msg.join(', ') : msg || 'Error al guardar';
         this.loading = false;
       },
     });

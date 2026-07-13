@@ -34,6 +34,7 @@ export class AuthService {
       email: dto.email.toLowerCase(),
       passwordHash,
       displayName: dto.displayName,
+      photoUrl: null,
       authProvider: AuthProvider.LOCAL,
       providerId: null,
     });
@@ -50,6 +51,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         displayName: user.displayName,
+        photoUrl: user.photoUrl,
       },
     };
   }
@@ -60,6 +62,7 @@ export class AuthService {
       password: dto.password,
     });
 
+    const user = await this.usersRepo.findOne({ where: { id: authUser.id } });
     const accessToken = this.jwtTokenService.sign({
       sub: authUser.id,
       email: authUser.email,
@@ -71,6 +74,7 @@ export class AuthService {
         id: authUser.id,
         email: authUser.email,
         displayName: authUser.displayName,
+        photoUrl: user?.photoUrl ?? null,
       },
     };
   }
@@ -84,6 +88,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       displayName: user.displayName,
+      photoUrl: user.photoUrl,
       authProvider: user.authProvider,
     };
   }

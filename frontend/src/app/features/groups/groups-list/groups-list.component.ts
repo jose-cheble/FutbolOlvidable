@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GroupsService } from '../../../core/services/groups.service';
 import { UploadService } from '../../../core/services/upload.service';
@@ -17,15 +17,26 @@ export class GroupsListComponent implements OnInit {
   private readonly groupsService = inject(GroupsService);
   private readonly uploadService = inject(UploadService);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
 
   groups: GroupSummary[] = [];
   loading = true;
   showCreate = false;
+  showJoin = false;
   createError = '';
+  joinError = '';
+  joinSuccess = '';
+  createdGroupId: string | null = null;
+  createdGroupName: string | null = null;
+  copied = false;
 
   createForm = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     maxPlayers: [12, [Validators.required, Validators.min(2), Validators.max(50)]],
+  });
+
+  joinForm = this.fb.nonNullable.group({
+    groupId: ['', [Validators.required, Validators.minLength(8)]],
   });
 
   ngOnInit(): void {
@@ -45,22 +56,69 @@ export class GroupsListComponent implements OnInit {
 
   toggleCreate(): void {
     this.showCreate = !this.showCreate;
+    this.showJoin = false;
     this.createError = '';
+    if (!this.showCreate) {
+      this.createdGroupId = null;
+      this.createdGroupName = null;
+    }
+  }
+
+  toggleJoin(): void {
+    this.showJoin = !this.showJoin;
+    this.showCreate = false;
+    this.joinError = '';
+    this.joinSuccess = '';
+    this.createdGroupId = null;
+    this.createdGroupName = null;
   }
 
   createGroup(): void {
     if (this.createForm.invalid) return;
     const { name, maxPlayers } = this.createForm.getRawValue();
     this.groupsService.create(name, maxPlayers).subscribe({
-      next: () => {
+      next: (group) => {
         this.createForm.reset({ name: '', maxPlayers: 12 });
-        this.showCreate = false;
+        this.createdGroupId = group.id;
+        this.createdGroupName = group.name;
+        this.createError = '';
         this.loadGroups();
       },
       error: (err) => {
         this.createError = err.error?.message || 'Error al crear grupo';
       },
     });
+  }
+
+  joinGroup(): void {
+    if (this.joinForm.invalid) return;
+    const groupId = this.joinForm.getRawValue().groupId.trim();
+    this.joinError = '';
+    this.joinSuccess = '';
+    this.groupsService.join(groupId).subscribe({
+      next: (group) => {
+        this.joinSuccess = `Te uniste a “${group.name}”`;
+        this.joinForm.reset({ groupId: '' });
+        this.loadGroups();
+        this.router.navigate(['/groups', group.id]);
+      },
+      error: (err) => {
+        const msg = err.error?.message;
+        this.joinError = Array.isArray(msg)
+          ? msg.join(', ')
+          : msg || 'No se pudo unir al grupo. Revisá el ID.';
+      },
+    });
+  }
+
+  async copyId(id: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(id);
+      this.copied = true;
+      setTimeout(() => (this.copied = false), 2000);
+    } catch {
+      this.copied = false;
+    }
   }
 
   photoUrl(url: string | null): string | null {

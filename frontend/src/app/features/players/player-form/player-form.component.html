@@ -1,10 +1,13 @@
 <div class="card form-card fade-in">
   <h2>{{ player ? 'Editar jugador' : 'Nuevo jugador' }}</h2>
+  <p class="form-intro">
+    El apodo es el nombre en la cancha. La foto sale del perfil del usuario vinculado (Mi perfil).
+  </p>
   <form [formGroup]="form" (ngSubmit)="submit()">
     <div class="form-grid">
       <label>
-        Nombre
-        <input type="text" formControlName="name" />
+        Apodo / alias
+        <input type="text" formControlName="name" placeholder="El Tucu, Pipita…" />
       </label>
       <label>
         Posición
@@ -16,15 +19,18 @@
       </label>
     </div>
 
-    <div class="photo-upload">
-      @if (previewUrl) {
-        <img [src]="previewUrl" alt="" class="preview" />
-      }
-      <label class="btn-secondary btn-sm">
-        {{ uploading ? 'Subiendo…' : 'Foto' }}
-        <input type="file" accept="image/*" hidden (change)="onFileSelected($event)" [disabled]="uploading" />
-      </label>
-    </div>
+    <label class="link-label">
+      Vincular con usuario del grupo
+      <select formControlName="userId">
+        <option value="">Sin vincular (invitado de un partido)</option>
+        @for (member of availableMembers; track member.userId) {
+          <option [value]="member.userId">
+            {{ member.displayName }} ({{ member.email }})
+          </option>
+        }
+      </select>
+      <span class="hint">Sin cuenta: podés crearlo para un partido y borrarlo después.</span>
+    </label>
 
     @if (error) {
       <p class="error">{{ error }}</p>

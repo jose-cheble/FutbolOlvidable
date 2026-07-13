@@ -37,7 +37,9 @@ export class MatchesService {
   ) {}
 
   async create(groupId: string, dto: CreateMatchDto) {
-    return this.dataSource.transaction(async (manager) => {
+    // Guardar dentro de la TX y leer después del commit:
+    // findOne usa otro repo y no ve filas aún no confirmadas.
+    const matchId = await this.dataSource.transaction(async (manager) => {
       const match = manager.create(Match, {
         groupId,
         playedAt: dto.playedAt,
@@ -57,8 +59,10 @@ export class MatchesService {
       });
       await manager.save([teamA, teamB]);
 
-      return this.findOne(groupId, match.id);
+      return match.id;
     });
+
+    return this.findOne(groupId, matchId);
   }
 
   async findAll(groupId: string) {
@@ -80,7 +84,7 @@ export class MatchesService {
 
     const lineups = await this.lineupsRepo.find({
       where: { matchId },
-      relations: { player: true, matchTeam: true },
+      relations: { player: { user: true }, matchTeam: true },
     });
 
     return {
@@ -96,7 +100,7 @@ export class MatchesService {
           ? {
               id: l.player.id,
               name: l.player.name,
-              photoUrl: l.player.photoUrl,
+              photoUrl: l.player.user?.photoUrl ?? null,
               defaultPosition: l.player.defaultPosition,
               userId: l.player.userId,
             }

@@ -25,16 +25,21 @@ export class UsersService {
     private readonly votesRepo: Repository<Vote>,
   ) {}
 
-  async findOne(id: string) {
-    const user = await this.usersRepo.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('Usuario no encontrado');
+  private toPublic(user: User) {
     return {
       id: user.id,
       email: user.email,
       displayName: user.displayName,
+      photoUrl: user.photoUrl,
       authProvider: user.authProvider,
       createdAt: user.createdAt,
     };
+  }
+
+  async findOne(id: string) {
+    const user = await this.usersRepo.findOne({ where: { id } });
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    return this.toPublic(user);
   }
 
   async update(id: string, requesterId: string, dto: UpdateUserDto) {
@@ -43,9 +48,18 @@ export class UsersService {
     }
     const user = await this.usersRepo.findOne({ where: { id } });
     if (!user) throw new NotFoundException('Usuario no encontrado');
-    if (dto.displayName) user.displayName = dto.displayName;
+
+    if (dto.displayName !== undefined) user.displayName = dto.displayName;
+    if (dto.photoUrl !== undefined) user.photoUrl = dto.photoUrl;
+
     await this.usersRepo.save(user);
-    return this.findOne(id);
+
+    // La foto del usuario se refleja en todos sus jugadores vinculados
+    if (dto.photoUrl !== undefined) {
+      await this.playersRepo.update({ userId: id }, { photoUrl: dto.photoUrl });
+    }
+
+    return this.toPublic(user);
   }
 
   async remove(id: string, requesterId: string) {
@@ -69,6 +83,7 @@ export class UsersService {
     for (const m of memberships) {
       const player = await this.playersRepo.findOne({
         where: { groupId: m.groupId, userId },
+        relations: { user: true },
       });
 
       let avgScore: number | null = null;

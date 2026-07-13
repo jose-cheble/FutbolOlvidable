@@ -23,6 +23,7 @@ export class GroupDetailComponent implements OnInit {
   group: GroupDetail | null = null;
   matches: Match[] = [];
   loading = true;
+  copied = false;
   statusLabels = MATCH_STATUS_LABELS;
 
   ngOnInit(): void {
@@ -45,6 +46,17 @@ export class GroupDetailComponent implements OnInit {
       },
       error: () => (this.loading = false),
     });
+  }
+
+  async copyId(): Promise<void> {
+    if (!this.group) return;
+    try {
+      await navigator.clipboard.writeText(this.group.id);
+      this.copied = true;
+      setTimeout(() => (this.copied = false), 2000);
+    } catch {
+      this.copied = false;
+    }
   }
 
   photoUrl(url: string | null): string | null {
