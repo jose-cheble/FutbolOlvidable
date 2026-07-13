@@ -1,0 +1,7 @@
+# Dependencies for local builds with sharp
+node_modules
+dist
+uploads
+.env
+coverage
+*.log

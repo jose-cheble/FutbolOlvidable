@@ -1,0 +1,138 @@
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tab {
+  padding: 0.75rem 1.25rem;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+
+  &.active,
+  &:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  min-width: 180px;
+}
+
+.filters select {
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-input);
+  color: var(--text-primary);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  padding: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.85rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.rank {
+  font-family: var(--font-brand);
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  width: 48px;
+}
+
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  &.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+}
+
+.score {
+  font-family: var(--font-brand);
+  font-size: 1.5rem;
+  color: var(--accent);
+}
+
+.empty,
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+}

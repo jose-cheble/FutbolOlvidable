@@ -1,0 +1,33 @@
+services:
+  api:
+    environment:
+      NODE_ENV: production
+      RUN_SEED: "false"
+
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+      - uploads:/var/www/uploads:ro
+    environment:
+      ENABLE_SSL: ${ENABLE_SSL:-true}
+      DOMAIN: ${DOMAIN:-futbol-olvidable.archsys.com}
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+      - ./nginx/scripts/certbot-entrypoint.sh:/scripts/certbot-entrypoint.sh:ro
+    entrypoint: /bin/sh /scripts/certbot-entrypoint.sh
+    environment:
+      ENABLE_SSL: ${ENABLE_SSL:-true}
+      DOMAIN: ${DOMAIN:-futbol-olvidable.archsys.com}
+      CERTBOT_EMAIL: ${CERTBOT_EMAIL:-}
+
+volumes:
+  certbot_certs:
+  certbot_www:

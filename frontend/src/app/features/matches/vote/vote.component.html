@@ -1,0 +1,94 @@
+@if (loading) {
+  <p class="loading">Cargando votación…</p>
+} @else if (match) {
+  <div class="page fade-in">
+    <nav class="breadcrumb">
+      <a routerLink="/groups">Grupos</a>
+      <span>/</span>
+      <a [routerLink]="['/groups', groupId]">Grupo</a>
+      <span>/</span>
+      <span>Votar — {{ match.playedAt | date:'mediumDate' }}</span>
+    </nav>
+
+    @if (hasVoted) {
+      <div class="card voted-banner">
+        <p>✓ Ya votaste en este partido. Los votos son irreversibles.</p>
+        <a [routerLink]="['/groups', groupId]" class="btn-secondary btn-sm">Volver al grupo</a>
+      </div>
+    } @else if (match.status !== 'EN_VOTACION') {
+      <div class="card voted-banner">
+        <p>Este partido no está en votación.</p>
+      </div>
+    } @else {
+      <h1 class="page-title">Votación</h1>
+      <p class="subtitle">Calificá del 1 al 100 a cada jugador y elegí el MVP</p>
+
+      <div class="votes-list">
+        @for (entry of votablePlayers; track entry.playerId) {
+          <div class="vote-row card">
+            <div class="player-info">
+              @if (photoUrl(entry.player?.photoUrl); as src) {
+                <img [src]="src" alt="" class="avatar" />
+              } @else {
+                <div class="avatar placeholder">{{ entry.player?.name?.charAt(0) }}</div>
+              }
+              <div>
+                <strong>{{ entry.player?.name }}</strong>
+                <span class="team" [style.color]="entry.teamColor">{{ entry.teamName }}</span>
+              </div>
+            </div>
+            <div class="slider-wrap">
+              <input
+                type="range"
+                min="1"
+                max="100"
+                [value]="scores[entry.playerId]"
+                (input)="updateScore(entry.playerId, +$any($event.target).value)"
+                [disabled]="hasVoted"
+              />
+              <span class="score-display score-reveal">{{ scores[entry.playerId] }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="mvp-section card">
+        <h2>MVP del partido</h2>
+        <select [(ngModel)]="mvpPlayerId" [disabled]="hasVoted" class="mvp-select">
+          <option value="">Seleccionar…</option>
+          @for (entry of votablePlayers; track entry.playerId) {
+            <option [value]="entry.playerId">{{ entry.player?.name }}</option>
+          }
+        </select>
+      </div>
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="requestSubmit()"
+        [disabled]="!canSubmit() || submitting"
+      >
+        Enviar votos
+      </button>
+    }
+  </div>
+}
+
+@if (showConfirm) {
+  <div class="modal-overlay" (click)="showConfirm = false">
+    <div class="modal card" (click)="$event.stopPropagation()">
+      <h2>¿Confirmar votos?</h2>
+      <p>Esta acción es <strong>irreversible</strong>. No podrás modificar tus votos.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" (click)="showConfirm = false">Cancelar</button>
+        <button type="button" class="btn-primary" (click)="confirmSubmit()" [disabled]="submitting">
+          {{ submitting ? 'Enviando…' : 'Confirmar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

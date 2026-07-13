@@ -1,0 +1,30 @@
+<div class="page fade-in">
+  <nav class="breadcrumb">
+    <a routerLink="/groups">Grupos</a>
+    <span>/</span>
+    <a [routerLink]="['/groups', groupId]">Grupo</a>
+    <span>/</span>
+    <span>Nuevo partido</span>
+  </nav>
+
+  <div class="card form-card">
+    <h1>Nuevo partido</h1>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Fecha del partido
+        <input type="date" formControlName="playedAt" />
+      </label>
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <div class="actions">
+        <a [routerLink]="['/groups', groupId]" class="btn-ghost">Cancelar</a>
+        <button type="submit" class="btn-primary" [disabled]="loading || form.invalid">
+          {{ loading ? 'Creando…' : 'Crear y armar lineup' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

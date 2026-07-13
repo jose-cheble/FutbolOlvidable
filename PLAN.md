@@ -472,47 +472,47 @@ Credenciales documentadas en el `README.md` para facilitar el primer login.
 ## Fases de implementación
 
 ### Fase 1 — Fundación (semana 1)
-- [ ] Scaffold monorepo: NestJS + Angular + Docker Compose + PostgreSQL + nginx.
-- [ ] `docker-compose.yml` (dev) y `docker-compose.prod.yml` (overlay SSL).
-- [ ] nginx reverse proxy: HTTP en dev, HTTPS en prod para `futbol-olvidable.archsys.com`.
-- [ ] certbot condicional: no intenta generar certs si `ENABLE_SSL=false`.
-- [ ] PostgreSQL con puerto `5432:5432` expuesto al host para acceso externo.
-- [ ] Entidad `User` con `auth_provider`/`provider_id`, migraciones, `AuthModule` (register/login/JWT extensible).
-- [ ] Patrón Strategy: `LocalAuthStrategy` + stub `GoogleAuthStrategy`.
-- [ ] Script de seed: usuario semilla `admin@futbol.local` / `Admin123!` (idempotente).
-- [ ] CRUD básico de usuarios.
-- [ ] Angular: login, register, layout base, guard de rutas, interceptor JWT.
+- [x] Scaffold monorepo: NestJS + Angular + Docker Compose + PostgreSQL + nginx.
+- [x] `docker-compose.yml` (dev) y `docker-compose.prod.yml` (overlay SSL).
+- [x] nginx reverse proxy: HTTP en dev, HTTPS en prod para `futbol-olvidable.archsys.com`.
+- [x] certbot condicional: no intenta generar certs si `ENABLE_SSL=false`.
+- [x] PostgreSQL con puerto `5432:5432` expuesto al host para acceso externo.
+- [x] Entidad `User` con `auth_provider`/`provider_id`, migraciones, `AuthModule` (register/login/JWT extensible).
+- [x] Patrón Strategy: `LocalAuthStrategy` + stub `GoogleAuthStrategy`.
+- [x] Script de seed: usuario semilla `admin@futbol.local` / `Admin123!` (idempotente).
+- [x] CRUD básico de usuarios.
+- [x] Angular: login, register, layout base, guard de rutas, interceptor JWT.
 
 ### Fase 2 — Grupos y jugadores (semana 2)
-- [ ] Entidades `Group`, `GroupMember`, `Player` con `group_id` y `UNIQUE (group_id, user_id)`.
-- [ ] `UploadModule` con conversión automática a WebP vía `sharp` (resize + compresión).
-- [ ] CRUD grupos con `max_players` y foto.
-- [ ] CRUD jugadores con posición default y foto.
-- [ ] `GET /groups` y `GET /users/me/groups` con resumen de stats.
-- [ ] Angular: **Mis Grupos** con tarjetas y puntaje por grupo; CRUD jugadores con preview de imagen.
+- [x] Entidades `Group`, `GroupMember`, `Player` con `group_id` y `UNIQUE (group_id, user_id)`.
+- [x] `UploadModule` con conversión automática a WebP vía `sharp` (resize + compresión).
+- [x] CRUD grupos con `max_players` y foto.
+- [x] CRUD jugadores con posición default y foto.
+- [x] `GET /groups` y `GET /users/me/groups` con resumen de stats.
+- [x] Angular: **Mis Grupos** con tarjetas y puntaje por grupo; CRUD jugadores con preview de imagen.
 
 ### Fase 3 — Partidos y cancha (semana 3)
-- [ ] Entidades `Match`, `MatchTeam`, `MatchLineup`.
-- [ ] Flujo borrador: armar equipos, colocar pins, guardar coordenadas.
-- [ ] Componente `FieldCanvasComponent` en Angular.
-- [ ] Transición de estado del partido.
+- [x] Entidades `Match`, `MatchTeam`, `MatchLineup`.
+- [x] Flujo borrador: armar equipos, colocar pins, guardar coordenadas.
+- [x] Componente `FieldCanvasComponent` en Angular.
+- [x] Transición de estado del partido.
 
 ### Fase 4 — Votaciones (semana 4)
-- [ ] Entidades `Vote`, `MvpVote` con constraints de inmutabilidad.
-- [ ] Endpoint batch de votación scoped al grupo con validaciones.
-- [ ] UI de votación: sliders 1–100, selector MVP, confirmación irreversible.
+- [x] Entidades `Vote`, `MvpVote` con constraints de inmutabilidad.
+- [x] Endpoint batch de votación scoped al grupo con validaciones.
+- [x] UI de votación: sliders 1–100, selector MVP, confirmación irreversible.
 
 ### Fase 5 — Rankings (semana 5)
-- [ ] Queries agregadas en `RankingsModule` **por grupo** (sin ranking global).
-- [ ] `GET /groups/:id/players/:playerId/stats`.
-- [ ] Filtros por posición default vs posición en partido.
-- [ ] Dashboard de estadísticas por jugador dentro del grupo.
-- [ ] Mis Grupos muestra puntajes distintos por grupo.
+- [x] Queries agregadas en `RankingsModule` **por grupo** (sin ranking global).
+- [x] `GET /groups/:id/players/:playerId/stats`.
+- [x] Filtros por posición default vs posición en partido.
+- [x] Dashboard de estadísticas por jugador dentro del grupo.
+- [x] Mis Grupos muestra puntajes distintos por grupo.
 
 ### Fase 6 — Pulido
-- [ ] Manejo de errores, loading states, validaciones de formulario.
-- [ ] Seed data extendido para demo (grupo, jugadores, partido de ejemplo).
-- [ ] README con instrucciones dev/prod, credenciales semilla, conexión PostgreSQL, renovación SSL.
+- [x] Manejo de errores, loading states, validaciones de formulario.
+- [x] Seed data extendido para demo (grupo, jugadores, partido de ejemplo).
+- [x] README con instrucciones dev/prod, credenciales semilla, conexión PostgreSQL, renovación SSL.
 
 ---
 

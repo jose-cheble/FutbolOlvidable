@@ -1,0 +1,152 @@
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+}
+
+.group-header {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.group-photo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  &.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    font-size: 2rem;
+  }
+}
+
+.group-header h1 {
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: 2rem;
+  letter-spacing: 0.03em;
+}
+
+.meta {
+  color: var(--text-muted);
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0;
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 0.75rem 1.25rem;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+
+  &.active,
+  &:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.match-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.match-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.match-date {
+  font-weight: 600;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface-input);
+  width: fit-content;
+
+  &[data-status='EN_VOTACION'] {
+    background: rgba(200, 245, 66, 0.15);
+    color: var(--accent);
+  }
+
+  &[data-status='CERRADO'] {
+    color: var(--text-muted);
+  }
+}
+
+.match-teams {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.team-dot {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  color: #fff;
+}
+
+.empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+}

@@ -1,0 +1,31 @@
+<div class="auth-page fade-in">
+  <div class="auth-card">
+    <h1 class="brand">Futbol Olvidable</h1>
+    <p class="subtitle">Ingresá a tu cuenta</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>
+        Email
+        <input type="email" formControlName="email" placeholder="tu@email.com" autocomplete="email" />
+      </label>
+      <label>
+        Contraseña
+        <input type="password" formControlName="password" placeholder="••••••••" autocomplete="current-password" />
+      </label>
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <button type="submit" class="btn-primary" [disabled]="loading || form.invalid">
+        {{ loading ? 'Ingresando…' : 'Ingresar' }}
+      </button>
+    </form>
+
+    <p class="hint">Demo: <code>admin&#64;futbol.local</code> / <code>Admin123!</code></p>
+
+    <p class="footer-link">
+      ¿No tenés cuenta? <a routerLink="/register">Registrate</a>
+    </p>
+  </div>
+</div>

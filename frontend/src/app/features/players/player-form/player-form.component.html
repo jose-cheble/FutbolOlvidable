@@ -1,0 +1,40 @@
+<div class="card form-card fade-in">
+  <h2>{{ player ? 'Editar jugador' : 'Nuevo jugador' }}</h2>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-grid">
+      <label>
+        Nombre
+        <input type="text" formControlName="name" />
+      </label>
+      <label>
+        Posición
+        <select formControlName="defaultPosition">
+          @for (pos of positions; track pos) {
+            <option [value]="pos">{{ pos.replace('_', ' ') }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="photo-upload">
+      @if (previewUrl) {
+        <img [src]="previewUrl" alt="" class="preview" />
+      }
+      <label class="btn-secondary btn-sm">
+        {{ uploading ? 'Subiendo…' : 'Foto' }}
+        <input type="file" accept="image/*" hidden (change)="onFileSelected($event)" [disabled]="uploading" />
+      </label>
+    </div>
+
+    @if (error) {
+      <p class="error">{{ error }}</p>
+    }
+
+    <div class="form-actions">
+      <button type="button" class="btn-ghost" (click)="cancelled.emit()">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="loading || form.invalid">
+        {{ loading ? 'Guardando…' : 'Guardar' }}
+      </button>
+    </div>
+  </form>
+</div>

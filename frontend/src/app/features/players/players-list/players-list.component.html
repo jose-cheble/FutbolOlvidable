@@ -1,0 +1,55 @@
+<div class="page fade-in">
+  <nav class="breadcrumb">
+    <a routerLink="/groups">Grupos</a>
+    <span>/</span>
+    <a [routerLink]="['/groups', groupId]">Grupo</a>
+    <span>/</span>
+    <span>Jugadores</span>
+  </nav>
+
+  <header class="page-header">
+    <h1 class="page-title">Jugadores</h1>
+    <button type="button" class="btn-primary" (click)="openCreate()">+ Agregar</button>
+  </header>
+
+  <nav class="tabs">
+    <a [routerLink]="['/groups', groupId, 'players']" routerLinkActive="active" class="tab">Jugadores</a>
+    <a [routerLink]="['/groups', groupId]" class="tab">Partidos</a>
+    <a [routerLink]="['/groups', groupId, 'rankings']" class="tab">Rankings</a>
+  </nav>
+
+  @if (showForm) {
+    <app-player-form
+      [groupId]="groupId"
+      [player]="editingPlayer"
+      (saved)="onSaved()"
+      (cancelled)="closeForm()"
+    />
+  }
+
+  @if (loading) {
+    <p class="loading">Cargando…</p>
+  } @else if (!players.length) {
+    <div class="card empty">No hay jugadores. Agregá el primero.</div>
+  } @else {
+    <div class="players-grid">
+      @for (player of players; track player.id) {
+        <div class="player-card card">
+          @if (photoUrl(player.photoUrl); as src) {
+            <img [src]="src" alt="" class="player-photo" />
+          } @else {
+            <div class="player-photo placeholder">{{ player.name.charAt(0) }}</div>
+          }
+          <div class="player-info">
+            <a [routerLink]="['/groups', groupId, 'players', player.id]" class="player-name">{{ player.name }}</a>
+            <span class="position">{{ positionLabel(player.defaultPosition) }}</span>
+          </div>
+          <div class="player-actions">
+            <button type="button" class="btn-ghost btn-sm" (click)="openEdit(player)">Editar</button>
+            <button type="button" class="btn-ghost btn-sm danger" (click)="deletePlayer(player)">Eliminar</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

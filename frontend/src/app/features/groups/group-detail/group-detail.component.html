@@ -1,0 +1,57 @@
+@if (loading) {
+  <p class="loading">Cargando…</p>
+} @else if (group) {
+  <div class="page fade-in">
+    <nav class="breadcrumb">
+      <a routerLink="/groups">Grupos</a>
+      <span>/</span>
+      <span>{{ group.name }}</span>
+    </nav>
+
+    <header class="group-header">
+      @if (photoUrl(group.photoUrl); as src) {
+        <img [src]="src" alt="" class="group-photo" />
+      } @else {
+        <div class="group-photo placeholder">⚽</div>
+      }
+      <div>
+        <h1>{{ group.name }}</h1>
+        <p class="meta">{{ group.playerCount }} / {{ group.maxPlayers }} jugadores · {{ group.members.length }} miembros</p>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <a [routerLink]="['/groups', groupId, 'players']" routerLinkActive="active" class="tab">Jugadores</a>
+      <a [routerLink]="['/groups', groupId]" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="tab">Partidos</a>
+      <a [routerLink]="['/groups', groupId, 'rankings']" routerLinkActive="active" class="tab">Rankings</a>
+    </nav>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Partidos</h2>
+        <a [routerLink]="['/groups', groupId, 'matches', 'new']" class="btn-primary btn-sm">+ Nuevo partido</a>
+      </div>
+
+      @if (!matches.length) {
+        <div class="card empty">No hay partidos todavía.</div>
+      } @else {
+        <div class="matches-list">
+          @for (match of matches; track match.id) {
+            <div class="match-row card">
+              <div class="match-info">
+                <span class="match-date">{{ match.playedAt | date:'mediumDate' }}</span>
+                <span class="badge" [attr.data-status]="match.status">{{ statusLabels[match.status] }}</span>
+              </div>
+              <div class="match-teams">
+                @for (team of match.teams; track team.id) {
+                  <span class="team-dot" [style.background]="team.color">{{ team.name }}</span>
+                }
+              </div>
+              <a [routerLink]="matchAction(match)" class="btn-secondary btn-sm">{{ matchActionLabel(match) }}</a>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </div>
+}

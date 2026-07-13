@@ -1,0 +1,103 @@
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tab {
+  padding: 0.75rem 1.25rem;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+
+  &.active,
+  &:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.player-photo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+
+  &.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+}
+
+.player-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-name {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.position {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.player-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.danger {
+  color: var(--danger) !important;
+}
+
+.empty,
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+}

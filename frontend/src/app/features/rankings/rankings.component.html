@@ -1,0 +1,87 @@
+<div class="page fade-in">
+  <nav class="breadcrumb">
+    <a routerLink="/groups">Grupos</a>
+    <span>/</span>
+    <a [routerLink]="['/groups', groupId]">Grupo</a>
+    <span>/</span>
+    <span>Rankings</span>
+  </nav>
+
+  <header class="page-header">
+    <h1 class="page-title">Rankings</h1>
+  </header>
+
+  <nav class="tabs">
+    <a [routerLink]="['/groups', groupId, 'players']" class="tab">Jugadores</a>
+    <a [routerLink]="['/groups', groupId]" class="tab">Partidos</a>
+    <a [routerLink]="['/groups', groupId, 'rankings']" routerLinkActive="active" class="tab">Rankings</a>
+  </nav>
+
+  <div class="filters card">
+    <label>
+      Tipo
+      <select [(ngModel)]="type" (ngModelChange)="onTypeChange()">
+        <option value="default">General</option>
+        <option value="match">Por posición en partido</option>
+        <option value="mvp">MVP</option>
+      </select>
+    </label>
+    @if (type === 'default' || type === 'match') {
+      <label>
+        Posición
+        <select [(ngModel)]="position" (ngModelChange)="load()">
+          <option value="">Todas</option>
+          @for (pos of positions; track pos) {
+            <option [value]="pos">{{ positionLabels[pos] }}</option>
+          }
+        </select>
+      </label>
+    }
+  </div>
+
+  @if (loading) {
+    <p class="loading">Cargando…</p>
+  } @else if (!rankings.length) {
+    <div class="card empty">Sin datos todavía. Cerrá un partido para ver rankings.</div>
+  } @else {
+    <div class="table-wrap card">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Jugador</th>
+            @if (type === 'mvp') {
+              <th>MVPs</th>
+            } @else {
+              <th>Promedio</th>
+              <th>Partidos</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rankings; track row.playerId) {
+            <tr>
+              <td class="rank">{{ row.rank }}</td>
+              <td>
+                <div class="player-cell">
+                  @if (photoUrl(row.photoUrl); as src) {
+                    <img [src]="src" alt="" class="avatar" />
+                  } @else {
+                    <div class="avatar placeholder">{{ row.name.charAt(0) }}</div>
+                  }
+                  <a [routerLink]="['/groups', groupId, 'players', row.playerId]">{{ row.name }}</a>
+                </div>
+              </td>
+              @if (type === 'mvp') {
+                <td class="score score-reveal">{{ row.mvpCount }}</td>
+              } @else {
+                <td class="score score-reveal">{{ row.avgScore }}</td>
+                <td>{{ row.matchesPlayed }}</td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,70 @@
+<div class="page fade-in">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Mis Grupos</h1>
+      <p class="page-subtitle">Tus partidos, tus votos, tu historial</p>
+    </div>
+    <button type="button" class="btn-primary" (click)="toggleCreate()">
+      {{ showCreate ? 'Cancelar' : '+ Nuevo grupo' }}
+    </button>
+  </header>
+
+  @if (showCreate) {
+    <div class="card create-form">
+      <h2>Crear grupo</h2>
+      <form [formGroup]="createForm" (ngSubmit)="createGroup()">
+        <div class="form-row">
+          <label>
+            Nombre
+            <input type="text" formControlName="name" placeholder="Los del barrio" />
+          </label>
+          <label>
+            Máx. jugadores
+            <input type="number" formControlName="maxPlayers" min="2" max="50" />
+          </label>
+        </div>
+        @if (createError) {
+          <p class="error">{{ createError }}</p>
+        }
+        <button type="submit" class="btn-primary" [disabled]="createForm.invalid">Crear</button>
+      </form>
+    </div>
+  }
+
+  @if (loading) {
+    <p class="loading">Cargando grupos…</p>
+  } @else if (!groups.length) {
+    <div class="empty-state card">
+      <p>Todavía no tenés grupos. Creá uno para empezar.</p>
+    </div>
+  } @else {
+    <div class="groups-grid">
+      @for (group of groups; track group.id) {
+        <a [routerLink]="['/groups', group.id]" class="group-card card">
+          <div class="group-card__header">
+            @if (photoUrl(group.photoUrl); as src) {
+              <img [src]="src" alt="" class="group-card__photo" />
+            } @else {
+              <div class="group-card__placeholder" aria-hidden="true">FO</div>
+            }
+            <div>
+              <h2>{{ group.name }}</h2>
+              <span class="meta">Hasta {{ group.maxPlayers }} jugadores</span>
+            </div>
+          </div>
+          <div class="group-card__score score-reveal">
+            @if (group.avgScore != null) {
+              <span class="score-value">{{ group.avgScore }}</span>
+              <span class="score-label">tu promedio</span>
+              @if (group.matchesPlayed) {
+                <span class="score-label muted">{{ group.matchesPlayed }} partidos</span>
+              }
+            } @else {
+              <span class="score-label muted">Sin partidos cerrados</span>
+            }
+          </div>
+        </a>
+      }
+    </div>
+  }
+</div>

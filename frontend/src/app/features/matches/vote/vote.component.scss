@@ -1,0 +1,153 @@
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin: -1rem 0 1.5rem;
+}
+
+.votes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.vote-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 160px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  &.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-weight: 700;
+  }
+}
+
+.team {
+  display: block;
+  font-size: 0.8rem;
+}
+
+.slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 200px;
+
+  input[type='range'] {
+    flex: 1;
+    accent-color: var(--accent);
+  }
+}
+
+.score-display {
+  font-family: var(--font-brand);
+  font-size: 1.75rem;
+  color: var(--accent);
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.mvp-section {
+  margin-bottom: 1.5rem;
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+.mvp-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-input);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+.voted-banner {
+  text-align: center;
+  padding: 2rem;
+
+  p {
+    margin: 0 0 1rem;
+    color: var(--accent);
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  max-width: 400px;
+  width: 100%;
+
+  h2 {
+    margin: 0 0 0.75rem;
+  }
+
+  p {
+    color: var(--text-muted);
+    margin: 0 0 1.25rem;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.error {
+  color: var(--danger);
+  margin-bottom: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+}
