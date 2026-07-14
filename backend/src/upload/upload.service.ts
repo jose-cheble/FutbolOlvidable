@@ -35,20 +35,8 @@ export class UploadService implements OnModuleInit {
     file: Express.Multer.File,
     folder: 'groups' | 'players' | 'users',
   ): Promise<string> {
-    if (!file) {
+    if (!file?.buffer?.length) {
       throw new BadRequestException('Archivo requerido');
-    }
-
-    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-    if (!allowed.includes(file.mimetype)) {
-      throw new BadRequestException('Solo se permiten JPG, PNG o WebP');
-    }
-
-    const maxBytes = this.maxSizeMb * 1024 * 1024;
-    if (file.size > maxBytes) {
-      throw new BadRequestException(
-        `La imagen no puede superar ${this.maxSizeMb} MB`,
-      );
     }
 
     const filename = `${randomUUID()}.webp`;

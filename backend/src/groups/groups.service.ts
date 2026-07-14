@@ -1,6 +1,4 @@
 import {
-  BadRequestException,
-  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -85,17 +83,7 @@ export class GroupsService {
     const group = await this.groupsRepo.findOne({ where: { id } });
     if (!group) throw new NotFoundException('Grupo no encontrado');
 
-    if (dto.maxPlayers !== undefined) {
-      const playerCount = await this.playersRepo.count({
-        where: { groupId: id },
-      });
-      if (dto.maxPlayers < playerCount) {
-        throw new BadRequestException(
-          `No podés bajar max_players por debajo de ${playerCount} jugadores actuales`,
-        );
-      }
-      group.maxPlayers = dto.maxPlayers;
-    }
+    if (dto.maxPlayers !== undefined) group.maxPlayers = dto.maxPlayers;
     if (dto.name !== undefined) group.name = dto.name;
     if (dto.photoUrl !== undefined) group.photoUrl = dto.photoUrl;
 
@@ -118,7 +106,7 @@ export class GroupsService {
       where: { groupId, userId },
     });
     if (existing) {
-      throw new ConflictException('Ya sos miembro de este grupo');
+      return this.findOne(groupId);
     }
 
     await this.membersRepo.save(

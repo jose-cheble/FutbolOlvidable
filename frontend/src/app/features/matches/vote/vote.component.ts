@@ -85,7 +85,10 @@ export class VoteComponent implements OnInit {
       !this.hasVoted &&
       this.match?.status === MatchStatus.EN_VOTACION &&
       !!this.mvpPlayerId &&
-      this.votablePlayers.every((p) => this.scores[p.playerId] >= 1)
+      this.votablePlayers.every(
+        (p) => this.scores[p.playerId] >= 1 && this.scores[p.playerId] <= 100,
+      ) &&
+      !this.votablePlayers.some((p) => p.playerId === this.mvpPlayerId)
     );
   }
 

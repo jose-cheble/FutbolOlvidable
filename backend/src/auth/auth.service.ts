@@ -22,8 +22,13 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
+    const email = dto.email?.toLowerCase()?.trim();
+    if (!email || !dto.password || !dto.displayName) {
+      throw new UnauthorizedException('Datos de registro incompletos');
+    }
+
     const existing = await this.usersRepo.findOne({
-      where: { email: dto.email.toLowerCase() },
+      where: { email },
     });
     if (existing) {
       throw new ConflictException('El email ya está registrado');
@@ -31,7 +36,7 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
     const user = this.usersRepo.create({
-      email: dto.email.toLowerCase(),
+      email,
       passwordHash,
       displayName: dto.displayName,
       photoUrl: null,
@@ -57,8 +62,13 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
+    const email = dto.email?.toLowerCase()?.trim();
+    if (!email || !dto.password) {
+      throw new UnauthorizedException('Email y contraseña requeridos');
+    }
+
     const authUser = await this.localStrategy.validate({
-      email: dto.email.toLowerCase(),
+      email,
       password: dto.password,
     });
 

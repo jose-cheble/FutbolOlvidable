@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { UsersService } from '../../core/services/users.service';
 import { UploadService } from '../../core/services/upload.service';
 import { User } from '../../core/models';
+import { NAME_MAX, NAME_MIN, validateImageFile } from '../../core/validators/form-limits';
 
 @Component({
   selector: 'app-profile',
@@ -27,7 +28,7 @@ export class ProfileComponent implements OnInit {
   success = '';
 
   form = this.fb.nonNullable.group({
-    displayName: ['', [Validators.required, Validators.minLength(2)]],
+    displayName: ['', [Validators.required, Validators.minLength(NAME_MIN), Validators.maxLength(NAME_MAX)]],
   });
 
   ngOnInit(): void {
@@ -45,6 +46,13 @@ export class ProfileComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file || !this.user) return;
+
+    const fileError = validateImageFile(file);
+    if (fileError) {
+      this.error = fileError;
+      input.value = '';
+      return;
+    }
 
     this.uploading = true;
     this.error = '';

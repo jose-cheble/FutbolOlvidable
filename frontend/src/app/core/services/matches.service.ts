@@ -18,9 +18,10 @@ export class MatchesService {
     );
   }
 
-  create(groupId: string, playedAt: string): Observable<Match> {
+  create(groupId: string, playedAt: string, playersPerTeam: number): Observable<Match> {
     return this.http.post<Match>(`${environment.apiUrl}/groups/${groupId}/matches`, {
       playedAt,
+      playersPerTeam,
     });
   }
 

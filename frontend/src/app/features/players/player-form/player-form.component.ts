@@ -10,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PlayersService } from '../../../core/services/players.service';
+import { NAME_MAX, NAME_MIN } from '../../../core/validators/form-limits';
 import { DefaultPosition, GroupMember, Player } from '../../../core/models';
 
 @Component({
@@ -23,6 +24,8 @@ export class PlayerFormComponent implements OnChanges {
   @Input({ required: true }) groupId!: string;
   @Input() player: Player | null = null;
   @Input() availableMembers: GroupMember[] = [];
+  @Input() maxPlayers = 50;
+  @Input() playerCount = 0;
   @Output() saved = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
 
@@ -34,7 +37,7 @@ export class PlayerFormComponent implements OnChanges {
   loading = false;
 
   form = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
+    name: ['', [Validators.required, Validators.minLength(NAME_MIN), Validators.maxLength(NAME_MAX)]],
     defaultPosition: [DefaultPosition.MEDIO_CAMPO, Validators.required],
     userId: [''],
   });
@@ -61,11 +64,26 @@ export class PlayerFormComponent implements OnChanges {
 
   submit(): void {
     if (this.form.invalid) return;
-    this.loading = true;
-    this.error = '';
+
     const data = this.form.getRawValue();
     const userId = (data.userId || '').trim() || null;
 
+    if (!this.player && this.playerCount >= this.maxPlayers) {
+      this.error = `El grupo ya alcanzó el máximo de ${this.maxPlayers} jugadores`;
+      return;
+    }
+
+    if (userId) {
+      const keepingLink = this.player?.userId === userId;
+      const memberAvailable = this.availableMembers.some((m) => m.userId === userId);
+      if (!keepingLink && !memberAvailable) {
+        this.error = 'Ese usuario ya tiene un jugador en este grupo';
+        return;
+      }
+    }
+
+    this.loading = true;
+    this.error = '';
     const req = this.player
       ? this.playersService.update(this.groupId, this.player.id, {
           name: data.name,

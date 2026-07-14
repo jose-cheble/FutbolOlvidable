@@ -19,7 +19,7 @@
             {{ uploading ? 'Subiendo…' : 'Cambiar foto' }}
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp"
               hidden
               (change)="onFileSelected($event)"
               [disabled]="uploading"

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, filter, take, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthResponse, User } from '../models';
 
@@ -10,12 +10,15 @@ const TOKEN_KEY = 'fo_token';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
+  private readonly readySubject = new BehaviorSubject(false);
   readonly currentUser$ = this.currentUserSubject.asObservable();
 
   constructor() {
-    if (this.getToken()) {
-      this.loadMe().subscribe({ error: () => this.logout() });
-    }
+    this.restoreSession();
+  }
+
+  whenReady(): Observable<boolean> {
+    return this.readySubject.pipe(filter(Boolean), take(1));
   }
 
   get token(): string | null {
@@ -67,5 +70,23 @@ export class AuthService {
   private setSession(res: AuthResponse): void {
     localStorage.setItem(TOKEN_KEY, res.accessToken);
     this.currentUserSubject.next(res.user);
+  }
+
+  private restoreSession(): void {
+    const token = this.getToken();
+    if (!token) {
+      this.readySubject.next(true);
+      return;
+    }
+
+    this.loadMe().subscribe({
+      next: () => this.readySubject.next(true),
+      error: (err) => {
+        if (err?.status === 401 || err?.status === 403) {
+          this.logout();
+        }
+        this.readySubject.next(true);
+      },
+    });
   }
 }

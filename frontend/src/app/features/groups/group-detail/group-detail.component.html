@@ -47,6 +47,9 @@
             <div class="match-row card">
               <div class="match-info">
                 <span class="match-date">{{ match.playedAt | date:'mediumDate' }}</span>
+                @if (match.playersPerTeam) {
+                  <span class="format-badge">{{ match.playersPerTeam }} vs {{ match.playersPerTeam }}</span>
+                }
                 <span class="badge" [attr.data-status]="match.status">{{ statusLabels[match.status] }}</span>
               </div>
               <div class="match-teams">

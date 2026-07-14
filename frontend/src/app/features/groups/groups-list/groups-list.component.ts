@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GroupsService } from '../../../core/services/groups.service';
+import { GROUP_PLAYERS_MAX, GROUP_PLAYERS_MIN, NAME_MAX, NAME_MIN } from '../../../core/validators/form-limits';
 import { UploadService } from '../../../core/services/upload.service';
 import { GroupSummary } from '../../../core/models';
 
@@ -31,8 +32,8 @@ export class GroupsListComponent implements OnInit {
   copied = false;
 
   createForm = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    maxPlayers: [12, [Validators.required, Validators.min(2), Validators.max(50)]],
+    name: ['', [Validators.required, Validators.minLength(NAME_MIN), Validators.maxLength(NAME_MAX)]],
+    maxPlayers: [12, [Validators.required, Validators.min(GROUP_PLAYERS_MIN), Validators.max(GROUP_PLAYERS_MAX)]],
   });
 
   joinForm = this.fb.nonNullable.group({
@@ -95,6 +96,12 @@ export class GroupsListComponent implements OnInit {
     const groupId = this.joinForm.getRawValue().groupId.trim();
     this.joinError = '';
     this.joinSuccess = '';
+
+    if (this.groups.some((g) => g.id === groupId)) {
+      this.router.navigate(['/groups', groupId]);
+      return;
+    }
+
     this.groupsService.join(groupId).subscribe({
       next: (group) => {
         this.joinSuccess = `Te uniste a “${group.name}”`;

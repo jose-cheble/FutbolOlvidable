@@ -64,6 +64,7 @@ export interface Player {
   photoUrl: string | null;
   defaultPosition: DefaultPosition;
   userId: string | null;
+  avgScore?: number | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -91,9 +92,11 @@ export interface Match {
   id: string;
   groupId: string;
   playedAt: string;
+  playersPerTeam: number;
   status: MatchStatus;
   teams: MatchTeam[];
   lineups?: LineupEntry[];
+  roster?: Player[];
   createdAt?: string;
   updatedAt?: string;
 }

@@ -1,6 +1,4 @@
 import {
-  BadRequestException,
-  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -56,24 +54,6 @@ export class PlayersService {
     const group = await this.groupsRepo.findOne({ where: { id: groupId } });
     if (!group) throw new NotFoundException('Grupo no encontrado');
 
-    const count = await this.playersRepo.count({ where: { groupId } });
-    if (count >= group.maxPlayers) {
-      throw new BadRequestException(
-        `El grupo ya alcanzó el máximo de ${group.maxPlayers} jugadores`,
-      );
-    }
-
-    if (dto.userId) {
-      const linked = await this.playersRepo.findOne({
-        where: { groupId, userId: dto.userId },
-      });
-      if (linked) {
-        throw new ConflictException(
-          'Este usuario ya tiene un jugador en este grupo',
-        );
-      }
-    }
-
     const photoUrl = await this.resolveUserPhoto(dto.userId);
 
     const player = this.playersRepo.create({
@@ -111,17 +91,6 @@ export class PlayersService {
       relations: { user: true },
     });
     if (!player) throw new NotFoundException('Jugador no encontrado');
-
-    if (dto.userId !== undefined && dto.userId !== null) {
-      const linked = await this.playersRepo.findOne({
-        where: { groupId, userId: dto.userId },
-      });
-      if (linked && linked.id !== playerId) {
-        throw new ConflictException(
-          'Este usuario ya tiene un jugador en este grupo',
-        );
-      }
-    }
 
     if (dto.name !== undefined) player.name = dto.name;
     if (dto.defaultPosition !== undefined)

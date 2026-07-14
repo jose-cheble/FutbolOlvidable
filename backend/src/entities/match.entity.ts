@@ -25,6 +25,9 @@ export class Match {
   @Column({ name: 'played_at', type: 'date' })
   playedAt: string;
 
+  @Column({ name: 'players_per_team', type: 'int', default: 7 })
+  playersPerTeam: number;
+
   @Column({
     type: 'enum',
     enum: MatchStatus,

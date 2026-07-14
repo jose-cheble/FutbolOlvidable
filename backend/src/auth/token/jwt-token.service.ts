@@ -16,14 +16,14 @@ export class JwtTokenService {
 
   sign(payload: JwtPayload): string {
     return this.jwtService.sign(payload, {
-      secret: this.config.get<string>('JWT_SECRET'),
+      secret: this.config.get<string>('JWT_SECRET', 'dev-secret'),
       expiresIn: this.config.get('JWT_EXPIRES_IN', '7d') as `${number}d`,
     });
   }
 
   verify(token: string): JwtPayload {
     return this.jwtService.verify(token, {
-      secret: this.config.get<string>('JWT_SECRET'),
+      secret: this.config.get<string>('JWT_SECRET', 'dev-secret'),
     });
   }
 }

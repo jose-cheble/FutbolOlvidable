@@ -24,6 +24,8 @@ export class PlayersListComponent implements OnInit {
   groupId = '';
   players: Player[] = [];
   members: GroupMember[] = [];
+  maxPlayers = 50;
+  playerCount = 0;
   availableMembers: GroupMember[] = [];
   loading = true;
   showForm = false;
@@ -54,6 +56,8 @@ export class PlayersListComponent implements OnInit {
       next: ({ players, group }) => {
         this.players = players;
         this.members = group.members;
+        this.maxPlayers = group.maxPlayers;
+        this.playerCount = group.playerCount;
         this.refreshAvailableMembers();
         this.loading = false;
       },
@@ -68,6 +72,7 @@ export class PlayersListComponent implements OnInit {
   }
 
   openCreate(): void {
+    if (this.playerCount >= this.maxPlayers) return;
     this.editingPlayer = null;
     this.refreshAvailableMembers();
     this.showForm = true;
